@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        Open in browser for testing: chrome-extension://ecfebhfoohidfjgbohoacdajcflidnbn/test/test.html
+        Open in browser for testing: chrome-extension://bcecflpcoapbjhfjjgeamchkeofpjhnp/test/test.html
+    -->
+    <meta charset="UTF-8">
+    <title>Test Google Account Chooser</title>
+    <!--script src="../extension/google_accounts.js"/-->
+    <script>
+        function doit() {
+            var eel = document.getElementById("email");
+            //eel.getVa
+            console.log(eel.value);
+        }
+    </script>
+</head>
+<body>
+<div>
+    <div class="HKjQUb"><h1 class="pYERqe">Choose an account</h1></div>
+    <div class="Fk98Qd">
+        <form id="gaia_loginform" action="select.html" method="post">
+            <input name="continue" type="hidden" value="test.html">
+            <input name="btmpl" type="hidden" value="authsub"><input name="hl" type="hidden" value="en">
+            <ol jsname="mYI4cb">
+                <li class="GgHWyf uZ0ICd" jsname="QADJVc"></li>
+                <li id="account-sverrir@greenqloud.com" class="tnNfDe">
+                    <button type="submit" id="choose-account-0" name="Email" value="sverrir@greenqloud.com"
+                            class="V2qUud" tabindex="0" jsname="mzNpsf">
+                        <img class="zHvs5" alt="" src="chrome-extension://bcecflpcoapbjhfjjgeamchkeofpjhnp/res/blue16x16.png" id="account-image-0">
+                        <span class="tRmeue">Sverrir Berg</span>
+                        <span class="gu0k2c">sverrir@greenqloud.com</span>
+                    </button>
+                </li>
+                <li id="account-haasar@haasar.is" class="tnNfDe">
+                    <button type="submit" id="choose-account-1" name="Email" value="haasar@haasar.is" class="V2qUud"
+                            tabindex="0" jsname="mzNpsf">
+                        <img class="zHvs5" alt="" src="chrome-extension://bcecflpcoapbjhfjjgeamchkeofpjhnp/res/gray16x16.png" id="account-image-1">
+                        <span class="tRmeue">Sverrir Berg</span>
+                        <span class="gu0k2c">haasar@haasar.is</span>
+                    </button>
+                </li>
+                <li id="account-sverrir@googlealumni.com" class="tnNfDe">
+                    <button type="submit" id="choose-account-2" name="Email" value="sverrir@googlealumni.com"
+                            class="V2qUud" tabindex="0" jsname="mzNpsf">
+                        <img class="zHvs5" alt="" src="chrome-extension://bcecflpcoapbjhfjjgeamchkeofpjhnp/res/stuff16x16.png" id="account-image-2">
+                        <span class="tRmeue">Sverrir Berg</span>
+                        <span class="gu0k2c">sverrir@googlealumni.com</span>
+                    </button>
+                </li>
+            </ol>
+        </form>
+    </div>
+    <div class="tnNfDe oUlFTe">
+        <ul>
+            <li class="" jsname="mWZCyf"><a id="account-chooser-add-account"
+                                            href="http://localhost:63342/google-account-chooser/res/test.html?add_account"
+                                            jsname="tgvl3d" class="tXIHtc" tabindex="0">Add account</a></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

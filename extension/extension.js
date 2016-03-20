@@ -75,9 +75,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         // console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-        console.log(sender.tab);
         console.log(sender.tab.id);
-
+        console.log(request);
         if (request.action == "getEmail") {
             var email = getEmail(request.domain);
             if (email) {

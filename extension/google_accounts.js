@@ -6,11 +6,15 @@ console.log("in like Flynn!");
 
 function getDomain() {
     try {
-        return document.referrer.split('/')[2]
+        var domain = document.referrer.split('/')[2];
+        if (domain === undefined) {
+            return "test.html";
+        }
+        return domain;
     }
     catch(err) {
         if (DEBUG) console.log("Problem getting domain from referrer:", err.mesasge);
-        return "NONE"
+        return "NONE";
     }
 }
 
@@ -48,6 +52,8 @@ function clickHandler(domain, email) {
 function registerClickHandlers() {
     var buttons = getLoginButtons();
     var domain = getDomain();
+    console.log(buttons);
+    console.log(domain);
     for (var i = 0; i < buttons.length; i++) {
         var button = buttons[i];
         var email = button.getAttribute("value");
@@ -62,16 +68,17 @@ function registerClickHandlers() {
             domain: domain
         },
         function(response) {
-            if (response.email) {
-                for (var i = 0; i < buttons.length; i++) {
-                    var button = buttons[i];
-                    if (button.getAttribute("value") === response.email) {
-                        console.log("clicking button for email:", response.email);
-                        button.click();
+            if (response !== undefined)  {
+                if (response.email) {
+                    for (var i = 0; i < buttons.length; i++) {
+                        var button = buttons[i];
+                        if (button.getAttribute("value") === response.email) {
+                            console.log("clicking button for email:", response.email);
+                            button.click();
+                        }
                     }
                 }
             }
-            console.log("referrer:", document.referrer.split('/')[2]);
         }
     );
 }
