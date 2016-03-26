@@ -1,10 +1,12 @@
 # google-account-chooser
 
-If you use Google Authentication in applications on a day to day basis this
-chrome extension is for you. It will remember for each domain what Google Account
-you typically use for each domain.
+If you use Google Account Authentication in applications on a day to day basis this chrome extension is for you.
 
-Simply install the extension and wait until it learns your preferences.
+After selecting to log in to a 3rd party site using a Google Account this extension will remember which account you used so next time you log in you just have to select login and this extension will select the account automatically.
+
+This extension needs to access the Account Selection page and stores the selected account/email per domain.  If you use Google Account sync it will synchronise this between browsers.
+
+It does not store passwords or any other sensitive authentication data and does not store data from the pages you visit.
 
 ## Questions and Answers
 Q: What if I picked the wrong account?
