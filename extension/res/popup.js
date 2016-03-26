@@ -1,3 +1,7 @@
+//
+// Copyright 2016 - Sverrir A. Berg <sab@keilir.com>
+// See LICENSE file for more information.
+//
 const DISABLED = "(disabled)";
 const EMPTY = "(empty)";
 
@@ -5,7 +9,7 @@ var extension = chrome.extension.getBackgroundPage();
 var tabId = null;
 var email = null;
 var domain = null;
-var DEBUG = true;
+var DEBUG = false;
 
 if (DEBUG) console.log("loading popup.js at: ", new Date());
 

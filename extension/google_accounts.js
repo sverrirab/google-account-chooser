@@ -1,6 +1,9 @@
-// Sverrir Á. Berg <sab@keilir.com>
+//
+// Copyright 2016 - Sverrir A. Berg <sab@keilir.com>
+// See LICENSE file for more information.
+//
 
-var DEBUG = true;
+var DEBUG = false;
 
 if (DEBUG) console.log("google_account.js - in like Flynn!");
 

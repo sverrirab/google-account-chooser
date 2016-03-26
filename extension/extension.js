@@ -1,4 +1,7 @@
-// Sverrir Á. Berg <sab@keilir.com>
+//
+// Copyright 2016 - Sverrir A. Berg <sab@keilir.com>
+// See LICENSE file for more information.
+//
 
 //
 // Database
@@ -9,7 +12,7 @@ const EMPTY = "(empty)";
 
 var db = null;
 var tabState = {};
-var DEBUG = true;
+var DEBUG = false;
 
 function initDatabase() {
     chrome.storage.sync.get(null, function (data) {
