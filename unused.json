@@ -31,9 +31,10 @@
       "js": ["click_sso_button/bamboohr.js"]
     },
     {
-      "matches": ["https://jira.*.*/login.jsp"],
+      "matches": ["https://jira.greenqloud.com/login.jsp"],
       "js": ["click_sso_button/jira.js"]
     }
+
 
   ],
 

@@ -2,7 +2,7 @@
 
 var DEBUG = true;
 
-console.log("in like Flynn!");
+if (DEBUG) console.log("google_account.js - in like Flynn!");
 
 function getDomain() {
     try {
@@ -35,7 +35,7 @@ function getLoginButtons() {
 
 function clickHandler(domain, email) {
     return function () {
-        console.log("clickHandler: registering %s -> %s", domain, email);
+        if (DEBUG) console.log("clickHandler: registering %s -> %s", domain, email);
         chrome.runtime.sendMessage(
             {
                 action: "setEmail",
@@ -43,7 +43,7 @@ function clickHandler(domain, email) {
                 domain: domain
             },
             function (response) {
-                console.log("clickHandler: done registering %s -> %s", domain, email);
+                if (DEBUG) console.log("clickHandler: done registering %s -> %s", domain, email);
             }
         );
     }
@@ -52,12 +52,10 @@ function clickHandler(domain, email) {
 function registerClickHandlers() {
     var buttons = getLoginButtons();
     var domain = getDomain();
-    console.log(buttons);
-    console.log(domain);
     for (var i = 0; i < buttons.length; i++) {
         var button = buttons[i];
         var email = button.getAttribute("value");
-        console.log("registerClickHandlers: %s %i is %s", domain, i, email);
+        if (DEBUG) console.log("registerClickHandlers: %s %i is %s", domain, i, email);
         button.addEventListener("click", clickHandler(domain, email), false);
     }
 
@@ -73,7 +71,7 @@ function registerClickHandlers() {
                     for (var i = 0; i < buttons.length; i++) {
                         var button = buttons[i];
                         if (button.getAttribute("value") === response.email) {
-                            console.log("clicking button for email:", response.email);
+                            if (DEBUG) console.log("clicking button for email:", response.email);
                             button.click();
                         }
                     }

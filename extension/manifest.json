@@ -7,32 +7,26 @@
     "storage"
   ],
   "icons": {
-    "16": "res/gray16x16.png",
-    "48": "res/gray100x100.png",
-    "128": "res/gray100x100.png"
+    "128": "res/logo_128.png"
   },
-  "browser_action": {
+  "page_action": {
     "default_title": "Automatically select Google Account to log in with",
-    "default_icon": "res/gray16x16.png",
+    "default_icon": "res/gray_icon.png",
     "default_popup": "res/popup.html"
   },
   "background": {
-    "scripts": ["extension.js"]
+    "scripts": ["extension.js"],
+    "persistent" : true
   },
   "content_scripts": [
     {
-      "matches": ["https://accounts.google.com/AccountChooser?*", "http://localhost:*/*"],
+      "matches": ["https://accounts.google.com/AccountChooser?*"],
       "js": ["google_accounts.js"]
     },
     {
-      "matches": ["https://*.bamboohr.com/login.php"],
-      "js": ["click_sso_button/bamboohr.js"]
-    },
-    {
-      "matches": ["https://jira.greenqloud.com/login.jsp"],
-      "js": ["click_sso_button/jira.js"]
+      "matches": ["http://localhost:*/*/AccountChooser.html"],
+      "js": ["google_accounts.js"]
     }
-
   ],
   "manifest_version": 2
 }

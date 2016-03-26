@@ -33,3 +33,9 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     //var manager_url = chrome.extension.getURL("popup.html");
     //focusOrCreateTab(manager_url);
 });
+
+//
+chrome.tabs.onSelectionChanged.addListener(function(tabId) {
+    console.log("selected: tabid:", tabId);
+    chrome.pageAction.hide(tabId);
+});

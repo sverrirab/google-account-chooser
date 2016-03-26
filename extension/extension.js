@@ -4,13 +4,16 @@
 // Database
 //
 
-var db = null;
-var blinkIndex = 0;
+const DISABLED = "(disabled)";
+const EMPTY = "(empty)";
 
+var db = null;
+var tabState = {};
+var DEBUG = true;
 
 function initDatabase() {
     chrome.storage.sync.get(null, function (data) {
-        console.log("db init:", data);
+        if (DEBUG) console.log("db init:", data);
         db = data;
     });
 }
@@ -31,7 +34,7 @@ function setEmail(domain, email) {
     }
     var update = {};
     update[domain] = email;
-    console.log("setEmail:", update);
+    if (DEBUG) console.log("setEmail:", update);
     chrome.storage.sync.set(
         update,
         function() {
@@ -39,15 +42,70 @@ function setEmail(domain, email) {
                 console.log("setEmail: ERROR: %s", chrome.runtime.lastError)
             }
             else {
-                console.log("setEmail: success");
-
+                if (DEBUG) console.log("setEmail: success");
             }
         }
     );
 }
 
 function getEmail(domain) {
+    if (DEBUG) console.log("getEmail: %s -> %s", domain, db[domain]);
     return db[domain];
+}
+
+function getTabData(tabId) {
+    if (tabId in tabState) {
+        return tabState[tabId];
+    }
+    else {
+        return null;
+    }
+}
+
+function setPageState(tabId, domain, email, noSets) {
+    if (DEBUG) console.log("setPageState: %s / %s [%d], %d", domain, email, tabId, noSets);
+    tabState[tabId] = {
+        domain: domain,
+        email: email
+    };
+    setEmail(domain, email);
+
+
+    // make sure icon is set after page navigation
+    for (var i = 0; i < noSets; i++) {
+        setTimeout(function() {
+            setIconState(tabId, domain, email);
+        }, i * 500);
+    }
+
+}
+
+function accountSelected(tabId, domain, email) {
+    if (DEBUG) console.log("accountSelected: %s / %s [%d]", domain, email, tabId);
+    var oldEmail = getEmail(domain);
+
+    if (oldEmail === DISABLED) {
+        email = DISABLED;
+        if (DEBUG) console.log("Domain disabled: %s / %s [%d]", domain, email, tabId);
+    }
+    setPageState(tabId, domain, email, 10);
+}
+
+function setIconState(tabId, domain, email) {
+    var icon = "res/blue_icon.png";
+    if (email === DISABLED) {
+        icon = "res/red_icon.png";
+    }
+    else if (!email || email === EMPTY) {
+        icon = "res/gray_icon.png";
+    }
+    chrome.pageAction.setIcon({
+        tabId: tabId,
+        path : {
+            "38": icon
+        }
+    });
+    chrome.pageAction.show(tabId);
 }
 
 //
@@ -59,8 +117,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         for (var key in changes) {
             if (changes.hasOwnProperty(key)) {
                 var values = changes[key];
-                console.log("values:", values);
-                console.log("db change: %s -> %s (from %s)", key, values.newValue, values.oldValue);
+                if (DEBUG) {
+                    console.log("values:", values);
+                    console.log("db change: %s -> %s (from %s)", key, values.newValue, values.oldValue);
+                }
                 if (values.hasOwnProperty("newValue")) {
                     db[key] = values.newValue;
                 }
@@ -74,24 +134,26 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        // console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-        console.log(sender.tab.id);
-        console.log(request);
+        var tabId = sender.tab.id;
+        if (DEBUG) console.log("request: %s tabid: %d", request, tabId);
         if (request.action == "getEmail") {
             var email = getEmail(request.domain);
+
+            // Update icon state so page action gets enabled.
+            setPageState(tabId, request.domain, email, 1);
+
             if (email) {
-                console.log("message-getEmail: %s -> %s", request.domain, email);
+                if (DEBUG) console.log("message-getEmail: %s -> %s", request.domain, email);
                 sendResponse({email: email});
             }
             else
             {
-                console.log("message-getEmail: %s not found", request.domain);
+                if (DEBUG) console.log("message-getEmail: %s not found", request.domain);
             }
         }
         else if (request.action == "setEmail") {
-            console.log("message-setEmail: %s -> %s", request.domain, request.email);
-            blinkStart();
-            setEmail(request.domain, request.email);
+            if (DEBUG) console.log("message-setEmail: %s -> %s", request.domain, request.email);
+            accountSelected(tabId, request.domain, request.email);
             sendResponse({status: "registered"});
         }
         else {
@@ -99,52 +161,3 @@ chrome.runtime.onMessage.addListener(
         }
     }
 );
-
-function blinkStart() {
-    blinkIndex = 5 * 5;
-    blinkIcon();
-}
-
-function blinkIcon() {
-    if (blinkIndex > 0) {
-        blinkIndex--;
-
-        var icon = "res/gray16x16.png";
-        if (blinkIndex % 2 === 1) {
-            icon = "res/blue16x16.png";
-        }
-        console.log("blinkIcon %d, %s", blinkIndex, icon);
-        chrome.browserAction.setIcon({
-            path : {
-                "19": icon
-            }
-        });
-        setTimeout(blinkIcon, 200)
-    }
-}
-
-// Called when the user clicks on the browser action.
-/*
-chrome.browserAction.onClicked.addListener(
-    function(tab) {
-        console.log('Turning ' + tab.url + ' red!');
-        chrome.tabs.executeScript({
-            code: 'document.body.style.backgroundColor="red"'
-        });
-    }
-);
-*/
-
-function click(e) {
-    chrome.tabs.executeScript(null,
-        {code:"document.body.style.backgroundColor='" + e.target.id + "'"});
-    window.close();
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    console.log("domcontentloaded?");
-    var divs = document.querySelectorAll('div');
-    for (var i = 0; i < divs.length; i++) {
-        divs[i].addEventListener('click', click);
-    }
-});

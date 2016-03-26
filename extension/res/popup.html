@@ -1,43 +1,44 @@
+<!DOCTYPE html>
 <html>
 <head>
-<style>
-table {
-  border-collapse:collapse;
-}
-
-td {
-  border: 1px solid black;
-  padding-left: 5px;
-}
-
-td.button {
-  border: none;
-}
-
-td.cookie_count {
-  text-align: right;
-}
-
-</style>
-<script src="popup.js"></script>
+    <style>
+        html {
+            width: 240px;
+        }
+        .row {
+            padding: 8px;
+        }
+        p {
+            margin: 4px;
+        }
+        .lookup {
+            color: #aaaaaa;
+        }
+        .label {
+            color: #0000ff;
+        }
+    </style>
+    <script src="popup.js"></script>
 </head>
 <body>
-  <h2>Cookies! ... Nom Nom Nom...</h2>
-  <button id="remove_button">DELETE ALL!</button>
-  <div id="filter_div">
-    Filter: <input id="filter" type="text">
-    <button>x</button>
-  </div>
-  <br />
-  <div id="summary_div">
-    Showing <span id="filter_count"></span> of <span id="total_count"></span> cookie domains.
-    <span id="delete_all_button"></span>
-  </div>
-  <br />
-  <table id="cookies">
-    <tr class="header">
-      <th>Name</th>
-      <th>#Cookies</th>
-    </tr>
-  </body>
+<div id="parent">
+    <div class="row">
+        <p>
+            <span class="label">Email: </span><span class="lookup" id="email">mr.placeholder@example.com</span>
+        </p>
+        <p>
+            <button id="btnEmail">Remove as default</button>
+        </p>
+    </div>
+    <div class="row">
+        <p>
+            <span class="label">Domain: </span><span class="lookup" id="domain">nomailpls.example.com</span>
+        </p>
+        <p>
+            <button id="btnDomain">Disable for domain</button>
+        </p>
+    </div>
+</div>
+<br/>
+</body>
 </html>
