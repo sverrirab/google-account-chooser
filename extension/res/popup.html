@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html {
+            width: 240px;
+        }
+        .row {
+            padding: 8px;
+        }
+        p {
+            margin: 4px;
+        }
+        .lookup {
+            color: #aaaaaa;
+        }
+        .label {
+            color: #0000ff;
+        }
+    </style>
+    <script src="popup.js"></script>
+</head>
+<body>
+<div id="parent">
+    <div class="row">
+        <p>
+            <span class="label">Email: </span><span class="lookup" id="email">mr.placeholder@example.com</span>
+        </p>
+        <p>
+            <button id="btnEmail">Remove as default</button>
+        </p>
+    </div>
+    <div class="row">
+        <p>
+            <span class="label">Domain: </span><span class="lookup" id="domain">nomailpls.example.com</span>
+        </p>
+        <p>
+            <button id="btnDomain">Disable for domain</button>
+        </p>
+    </div>
+</div>
+<br/>
+</body>
+</html>

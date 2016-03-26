@@ -1,0 +1,30 @@
+{
+  "author": "Sverrir Á. Berg",
+  "homepage_url": "https://github.com/sverrirab/google-account-chooser",
+  "name": "Google Account Chooser",
+  "version": "1.0",
+  "description": "Automatically Choose Google Account.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "icons": {
+    "128": "res/logo_128.png"
+  },
+  "page_action": {
+    "default_title": "Automatically Choose Google Account",
+    "default_icon": "res/gray_icon.png",
+    "default_popup": "res/popup.html"
+  },
+  "background": {
+    "scripts": ["extension.js"],
+    "persistent" : true
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://accounts.google.com/AccountChooser?*"],
+      "js": ["google_accounts.js"]
+    }
+  ],
+  "manifest_version": 2
+}
