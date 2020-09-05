@@ -1,15 +1,15 @@
 //
-// Copyright 2016 - Sverrir A. Berg <sab@keilir.com>
+// Copyright 2016-2020 - Sverrir A. Berg <sab@keilir.com>
 // See LICENSE file for more information.
 //
 
-var DEBUG = false;
+const DEBUG = false;
 
 if (DEBUG) console.log("google_account.js - in like Flynn!");
 
-function getDomain() {
+function gacGetDomain() {
     try {
-        var domain = document.referrer.split('/')[2];
+        let domain = document.referrer.split('/')[2];
         if (domain === undefined) {
             return "test.html";
         }
@@ -21,23 +21,30 @@ function getDomain() {
     }
 }
 
-function getLoginButtons() {
-    var buttons = [];
-    var btnNo = 0;
-    do {
-        var btnId = "choose-account-".concat(btnNo);
-        var button = document.getElementById(btnId);
-        if (!button) {
-            break;
-        }
-        buttons.push(button);
-        btnNo++;
-    } while (true);
-    return buttons;
+function gacGetLoginElements() {
+    return document.querySelectorAll('[data-identifier]');
 }
 
-function clickHandler(domain, email) {
+function gacPerformLogin(email) {
+    if (DEBUG) console.log("gacPerformLogin: %s", email);
+    let loginElements = gacGetLoginElements();
+    for (let i = 0; i < loginElements.length; i++) {
+        let el = loginElements[i];
+        let elEmail = el.getAttribute("data-identifier");
+        if (DEBUG) console.log("gacFoundEntry: %s", elEmail);
+        if (elEmail === email) {
+            if (DEBUG) console.log("clicking button for email:", email);
+            el.click();
+            return true;
+        }
+    }
+    if (DEBUG) console.log("gacPerformLogin: did not match any");
+    return false;
+}
+
+function gacClickHandler(domain, el) {
     return function () {
+        let email = el.getAttribute("data-identifier");
         if (DEBUG) console.log("clickHandler: registering %s -> %s", domain, email);
         chrome.runtime.sendMessage(
             {
@@ -52,15 +59,13 @@ function clickHandler(domain, email) {
     }
 }
 
-function registerClickHandlers() {
-    var buttons = getLoginButtons();
-    var domain = getDomain();
-    for (var i = 0; i < buttons.length; i++) {
-        var button = buttons[i];
-        var email = button.getAttribute("value");
-        if (DEBUG) console.log("registerClickHandlers: %s %i is %s", domain, i, email);
-        button.addEventListener("click", clickHandler(domain, email), false);
-    }
+function gacStartup() {
+    let domain = gacGetDomain();
+
+    // Register click handlers
+    gacGetLoginElements().forEach(
+        el => el.addEventListener("click", gacClickHandler(domain, el), false)
+    );
 
     // Try to see if we should log in automatically.
     chrome.runtime.sendMessage(
@@ -71,21 +76,11 @@ function registerClickHandlers() {
         function(response) {
             if (response !== undefined)  {
                 if (response.email) {
-                    for (var i = 0; i < buttons.length; i++) {
-                        var button = buttons[i];
-                        if (button.getAttribute("value") === response.email) {
-                            if (DEBUG) console.log("clicking button for email:", response.email);
-                            button.click();
-                        }
-                    }
+                    gacPerformLogin(response.email)
                 }
             }
         }
     );
 }
 
-//
-// Let's begin...
-//
-
-registerClickHandlers();
+gacStartup();

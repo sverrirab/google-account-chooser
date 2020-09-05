@@ -1,5 +1,5 @@
 //
-// Copyright 2016 - Sverrir A. Berg <sab@keilir.com>
+// Copyright 2016-2020 - Sverrir A. Berg <sab@keilir.com>
 // See LICENSE file for more information.
 //
 
@@ -9,10 +9,10 @@
 
 const DISABLED = "(disabled)";
 const EMPTY = "(empty)";
+const DEBUG = false;
 
-var db = null;
-var tabState = {};
-var DEBUG = false;
+let db = null;
+let tabState = {};
 
 function initDatabase() {
     chrome.storage.sync.get(null, function (data) {
@@ -35,7 +35,7 @@ function setEmail(domain, email) {
     if (getEmail(domain) === email) {
         return;
     }
-    var update = {};
+    let update = {};
     update[domain] = email;
     if (DEBUG) console.log("setEmail:", update);
     chrome.storage.sync.set(
@@ -75,7 +75,7 @@ function setPageState(tabId, domain, email, noSets) {
 
 
     // make sure icon is set after page navigation
-    for (var i = 0; i < noSets; i++) {
+    for (let i = 0; i < noSets; i++) {
         setTimeout(function() {
             setIconState(tabId, domain, email);
         }, i * 500);
@@ -85,7 +85,7 @@ function setPageState(tabId, domain, email, noSets) {
 
 function accountSelected(tabId, domain, email) {
     if (DEBUG) console.log("accountSelected: %s / %s [%d]", domain, email, tabId);
-    var oldEmail = getEmail(domain);
+    let oldEmail = getEmail(domain);
 
     if (oldEmail === DISABLED) {
         email = DISABLED;
@@ -95,7 +95,7 @@ function accountSelected(tabId, domain, email) {
 }
 
 function setIconState(tabId, domain, email) {
-    var icon = "res/blue_icon.png";
+    let icon = "res/blue_icon.png";
     if (email === DISABLED) {
         icon = "res/red_icon.png";
     }
@@ -117,9 +117,9 @@ function setIconState(tabId, domain, email) {
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (namespace === "sync") {
-        for (var key in changes) {
+        for (let key in changes) {
             if (changes.hasOwnProperty(key)) {
-                var values = changes[key];
+                let values = changes[key];
                 if (DEBUG) {
                     console.log("values:", values);
                     console.log("db change: %s -> %s (from %s)", key, values.newValue, values.oldValue);
@@ -137,10 +137,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        var tabId = sender.tab.id;
+        let tabId = sender.tab.id;
         if (DEBUG) console.log("request: %s tabid: %d", request, tabId);
-        if (request.action == "getEmail") {
-            var email = getEmail(request.domain);
+        if (request.action === "getEmail") {
+            let email = getEmail(request.domain);
 
             // Update icon state so page action gets enabled.
             setPageState(tabId, request.domain, email, 1);
@@ -154,7 +154,7 @@ chrome.runtime.onMessage.addListener(
                 if (DEBUG) console.log("message-getEmail: %s not found", request.domain);
             }
         }
-        else if (request.action == "setEmail") {
+        else if (request.action === "setEmail") {
             if (DEBUG) console.log("message-setEmail: %s -> %s", request.domain, request.email);
             accountSelected(tabId, request.domain, request.email);
             sendResponse({status: "registered"});
@@ -162,5 +162,6 @@ chrome.runtime.onMessage.addListener(
         else {
             console.log("message-unknown: ", request);
         }
+        return true;
     }
 );
