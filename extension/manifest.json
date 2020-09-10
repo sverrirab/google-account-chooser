@@ -17,13 +17,20 @@
     "default_popup": "res/popup.html"
   },
   "background": {
-    "scripts": ["extension.js"],
-    "persistent" : true
+    "scripts": [
+      "extension.js"
+    ],
+    "persistent": true
   },
   "content_scripts": [
     {
-      "matches": ["https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?*"],
-      "js": ["google_accounts.js"]
+      "matches": [
+        "https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?*",
+        "https://accounts.google.com/AccountChooser/signinchooser?*"
+      ],
+      "js": [
+        "google_accounts.js"
+      ]
     }
   ],
   "manifest_version": 2
