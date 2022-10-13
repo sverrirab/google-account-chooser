@@ -28,6 +28,16 @@ function gacGetLoginElements() {
 function gacPerformLogin(email) {
     if (DEBUG) console.log("gacPerformLogin: %s", email);
     let loginElements = gacGetLoginElements();
+
+
+    // Auto click the first account if there is only one
+    if (loginElements.length == 1) {
+        let el = loginElements[0];
+        el.click();
+        return true;
+    }
+
+    // Find and click if the account match given email
     for (let i = 0; i < loginElements.length; i++) {
         let el = loginElements[i];
         let elEmail = el.getAttribute("data-identifier");
@@ -38,6 +48,7 @@ function gacPerformLogin(email) {
             return true;
         }
     }
+
     if (DEBUG) console.log("gacPerformLogin: did not match any");
     return false;
 }
