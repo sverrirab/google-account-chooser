@@ -15,7 +15,7 @@ function gacGetDomain() {
         }
         return domain;
     }
-    catch(err) {
+    catch (err) {
         if (DEBUG) console.log("Problem getting domain from referrer:", err.mesasge);
         return "NONE";
     }
@@ -73,10 +73,10 @@ function gacStartup() {
             action: "getEmail",
             domain: domain
         },
-        function(response) {
-            if (response !== undefined)  {
+        function (response) {
+            if (response !== undefined) {
                 if (response.email) {
-                    gacPerformLogin(response.email)
+                    setTimeout(gacPerformLogin, 500, response.email);
                 }
             }
         }
