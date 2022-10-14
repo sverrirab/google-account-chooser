@@ -4,6 +4,7 @@
 //
 
 const DEBUG = false;
+const DELAY_LOGIN_MILLISECONDS = 500;
 
 if (DEBUG) console.log("google_account.js - in like Flynn!");
 
@@ -30,12 +31,7 @@ function gacPerformLogin(email) {
     let loginElements = gacGetLoginElements();
 
 
-    // Auto click the first account if there is only one
-    if (loginElements.length == 1) {
-        let el = loginElements[0];
-        el.click();
-        return true;
-    }
+
 
     // Find and click if the account match given email
     for (let i = 0; i < loginElements.length; i++) {
@@ -72,11 +68,21 @@ function gacClickHandler(domain, el) {
 
 function gacStartup() {
     let domain = gacGetDomain();
+    let loginElements = gacGetLoginElements();
 
     // Register click handlers
-    gacGetLoginElements().forEach(
+    loginElements.forEach(
         el => el.addEventListener("click", gacClickHandler(domain, el), false)
     );
+
+    // Auto click the first account if there is only one
+    if (loginElements.length == 1) {
+        setTimeout(() => {
+            let el = loginElements[0];
+            el.click();
+        }, DELAY_LOGIN_MILLISECONDS);
+        return;
+    }
 
     // Try to see if we should log in automatically.
     chrome.runtime.sendMessage(
@@ -87,7 +93,7 @@ function gacStartup() {
         function (response) {
             if (response !== undefined) {
                 if (response.email) {
-                    setTimeout(gacPerformLogin, 500, response.email);
+                    setTimeout(gacPerformLogin, DELAY_LOGIN_MILLISECONDS, response.email);
                 }
             }
         }
