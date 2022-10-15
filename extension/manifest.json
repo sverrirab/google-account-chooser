@@ -25,6 +25,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://accounts.google.com/o/oauth2/*",
         "https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?*",
         "https://accounts.google.com/AccountChooser/signinchooser?*"
       ],

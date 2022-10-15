@@ -4,6 +4,7 @@
 //
 
 const DEBUG = false;
+const DELAY_LOGIN_MILLISECONDS = 500;
 
 if (DEBUG) console.log("google_account.js - in like Flynn!");
 
@@ -15,7 +16,7 @@ function gacGetDomain() {
         }
         return domain;
     }
-    catch(err) {
+    catch (err) {
         if (DEBUG) console.log("Problem getting domain from referrer:", err.mesasge);
         return "NONE";
     }
@@ -28,6 +29,11 @@ function gacGetLoginElements() {
 function gacPerformLogin(email) {
     if (DEBUG) console.log("gacPerformLogin: %s", email);
     let loginElements = gacGetLoginElements();
+
+
+
+
+    // Find and click if the account match given email
     for (let i = 0; i < loginElements.length; i++) {
         let el = loginElements[i];
         let elEmail = el.getAttribute("data-identifier");
@@ -38,6 +44,7 @@ function gacPerformLogin(email) {
             return true;
         }
     }
+
     if (DEBUG) console.log("gacPerformLogin: did not match any");
     return false;
 }
@@ -61,11 +68,21 @@ function gacClickHandler(domain, el) {
 
 function gacStartup() {
     let domain = gacGetDomain();
+    let loginElements = gacGetLoginElements();
 
     // Register click handlers
-    gacGetLoginElements().forEach(
+    loginElements.forEach(
         el => el.addEventListener("click", gacClickHandler(domain, el), false)
     );
+
+    // Auto click the first account if there is only one
+    if (loginElements.length == 1) {
+        setTimeout(() => {
+            let el = loginElements[0];
+            el.click();
+        }, DELAY_LOGIN_MILLISECONDS);
+        return;
+    }
 
     // Try to see if we should log in automatically.
     chrome.runtime.sendMessage(
@@ -73,10 +90,10 @@ function gacStartup() {
             action: "getEmail",
             domain: domain
         },
-        function(response) {
-            if (response !== undefined)  {
+        function (response) {
+            if (response !== undefined) {
                 if (response.email) {
-                    gacPerformLogin(response.email)
+                    setTimeout(gacPerformLogin, DELAY_LOGIN_MILLISECONDS, response.email);
                 }
             }
         }
