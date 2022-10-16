@@ -1,5 +1,5 @@
 //
-// Copyright 2016-2020 - Sverrir A. Berg <sab@keilir.com>
+// Copyright 2016-2022 - Sverrir A. Berg <sab@keilir.com>
 // See LICENSE file for more information.
 //
 
@@ -9,12 +9,13 @@
 
 const DISABLED = "(disabled)";
 const EMPTY = "(empty)";
-const DEBUG = false;
+const DEBUG = true; // TODO: REMOVE
 
 let db = null;
 let tabState = {};
 
 function initDatabase() {
+    // Clearing: chrome.storage.sync.clear();
     chrome.storage.sync.get(null, function (data) {
         if (DEBUG) console.log("db init:", data);
         db = data;
@@ -22,14 +23,6 @@ function initDatabase() {
 }
 
 initDatabase();
-
-function clearDatabase() {
-    chrome.storage.sync.clear();
-}
-
-function getDatabase() {
-    return db;
-}
 
 function setEmail(domain, email) {
     if (getEmail(domain) === email) {
@@ -102,13 +95,13 @@ function setIconState(tabId, domain, email) {
     else if (!email || email === EMPTY) {
         icon = "res/gray_icon.png";
     }
-    chrome.pageAction.setIcon({
+    chrome.action.setIcon({
         tabId: tabId,
         path : {
             "38": icon
         }
     });
-    chrome.pageAction.show(tabId);
+    chrome.action.show(tabId);
 }
 
 //

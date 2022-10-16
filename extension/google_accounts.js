@@ -1,9 +1,9 @@
 //
-// Copyright 2016-2020 - Sverrir A. Berg <sab@keilir.com>
+// Copyright 2016-2022 - Sverrir A. Berg <sab@keilir.com>
 // See LICENSE file for more information.
 //
 
-const DEBUG = false;
+const DEBUG = true; // TODO: REMOVE!!!
 const DELAY_LOGIN_MILLISECONDS = 500;
 
 if (DEBUG) console.log("google_account.js - in like Flynn!");
@@ -15,8 +15,7 @@ function gacGetDomain() {
             return "test.html";
         }
         return domain;
-    }
-    catch (err) {
+    } catch (err) {
         if (DEBUG) console.log("Problem getting domain from referrer:", err.mesasge);
         return "NONE";
     }
@@ -29,9 +28,6 @@ function gacGetLoginElements() {
 function gacPerformLogin(email) {
     if (DEBUG) console.log("gacPerformLogin: %s", email);
     let loginElements = gacGetLoginElements();
-
-
-
 
     // Find and click if the account match given email
     for (let i = 0; i < loginElements.length; i++) {

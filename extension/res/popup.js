@@ -1,26 +1,26 @@
 //
-// Copyright 2016 - Sverrir A. Berg <sab@keilir.com>
+// Copyright 2016-2022 - Sverrir A. Berg <sab@keilir.com>
 // See LICENSE file for more information.
 //
 const DISABLED = "(disabled)";
 const EMPTY = "(empty)";
 
-var extension = chrome.extension.getBackgroundPage();
-var tabId = null;
-var email = null;
-var domain = null;
-var DEBUG = false;
+let extension = chrome.extension.getBackgroundPage();
+let tabId = null;
+let email = null;
+let domain = null;
+const DEBUG = true;  // TODO: remove
 
-if (DEBUG) console.log("loading popup.js at: ", new Date());
+if (DEBUG) extension.console.log("loading popup.js at: ", new Date());
 
 function X(elId) {
     return document.getElementById(elId)
 }
 
 function updatePopupState() {
-    if (DEBUG) console.log("updatePopupState %s, %s", domain, email);
-    var d = domain;
-    var e = email;
+    if (DEBUG) extension.console.log("updatePopupState %s, %s", domain, email);
+    let d = domain;
+    let e = email;
     if (d && e) {
         X("btnDomain").onclick = disableForThisDomain;
         X("btnEmail").onclick = removeAsDefault;
@@ -57,7 +57,8 @@ chrome.tabs.query(
     function(tabArray) {
         if (tabArray.length > 0) {
             tabId = tabArray[0].id;
-            var data = extension.getTabData(tabId);
+            let data = extension.getTabData(tabId);
+            if (DEBUG) extension.console.log("data", data);
             if (data) {
                 domain = data["domain"];
                 email = data["email"];
@@ -66,3 +67,7 @@ chrome.tabs.query(
         }
     }
 );
+
+browser.tabs.onUpdated(function(activeInfo) {
+    if (DEBUG) extension.console.log(activeInfo.tabId);
+});
